@@ -1,6 +1,7 @@
 package swervelib.encoders;
 
-import com.reduxrobotics.sensors.canandcoder.CANandcoder;
+import com.reduxrobotics.sensors.canandcoder.Canandcoder;
+
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
@@ -12,7 +13,7 @@ public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
   /**
    * The {@link CANandcoder} representing the CANandCoder on the CAN bus.
    */
-  public  CANandcoder encoder;
+  public  Canandcoder encoder;
   /**
    * Inversion state of the encoder.
    */
@@ -25,7 +26,7 @@ public class CanAndCoderSwerve extends SwerveAbsoluteEncoder
    */
   public CanAndCoderSwerve(int canid)
   {
-    encoder = new CANandcoder(canid);
+    encoder = new Canandcoder(canid);
   }
 
   /**
