@@ -23,8 +23,6 @@ import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 
-import com.pathplanner.lib.PathPlanner;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
@@ -38,10 +36,10 @@ public class RobotContainer
                                                                          "swerve/neo"));
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  CommandJoystick driverController = new CommandJoystick(1);
+  // CommandJoystick driverController = new CommandJoystick(1);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
-  XboxController driverXbox = new XboxController(0);
+  CommandXboxController driverXbox = new CommandXboxController(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -90,11 +88,12 @@ public class RobotContainer
                                                     () -> driverXbox.getRawAxis(2), () -> true);
     TeleopDrive closedFieldRel = new TeleopDrive(
         drivebase,
-        () -> MathUtil.applyDeadband(driverController.getY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverController.getX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> -driverController.getRawAxis(3), () -> true);
+        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> -driverXbox.getRightX(), () -> true);
 
     drivebase.setDefaultCommand(!RobotBase.isSimulation() ? closedAbsoluteDrive : closedFieldAbsoluteDrive);
+    //drivebase.setDefaultCommand(closedAbsoluteDrive);
   }
 
   /**
@@ -106,11 +105,13 @@ public class RobotContainer
    */
   private void configureBindings()
   {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    driverXbox.y().onTrue(new InstantCommand(drivebase::zeroGyro));
+    driverXbox.x().onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
 
-    new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
-//    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+    //new JoystickButton(driverXbox, driverXbox).onTrue((new InstantCommand(drivebase::zeroGyro)));
+    //new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    //new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
   /**
