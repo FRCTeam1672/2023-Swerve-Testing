@@ -74,17 +74,16 @@ public class RobotContainer {
             OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
             OperatorConstants.LEFT_X_DEADBAND),
-        () -> driverXbox.getRawAxis(2), () -> true);
+                                            //NOT FIELD RELATIVE
+        () -> driverXbox.getRawAxis(2), () -> false);
     TeleopDrive closedFieldRel = new TeleopDrive(
         drivebase,
         () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-        () -> -driverXbox.getRightX(), () -> true);
+                                            //NOT FIELD RELATIVE
+        () -> -driverXbox.getRightX(), () -> false);
 
-    drivebase.setDefaultCommand(!RobotBase.isSimulation() ? closedAbsoluteDrive : closedFieldAbsoluteDrive);
-    SmartDashboard.putData("Push Encoder Values", new InstantCommand(() -> {
-      drivebase.pushOffsetsToControllers();
-    }));
+    drivebase.setDefaultCommand(closedFieldRel);
     // drivebase.setDefaultCommand(closedAbsoluteDrive);
   }
 
@@ -102,9 +101,12 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureBindings() {
-    driverXbox.y().onTrue(new InstantCommand(drivebase::zeroGyro));
-    driverXbox.x().onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    // driverXbox.x().onTrue(new InstantCommand(drivebase::addFakeVisionReading));
     driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
+    SmartDashboard.putData("Push Encoder Values", new InstantCommand(() -> {
+      drivebase.pushOffsetsToControllers();
+    }));
+    SmartDashboard.putData("Zero Gyro", new InstantCommand(drivebase::zeroGyro));
 
     // new JoystickButton(driverXbox, driverXbox).onTrue((new
     // InstantCommand(drivebase::zeroGyro)));
