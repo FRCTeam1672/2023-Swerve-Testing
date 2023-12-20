@@ -2,6 +2,11 @@ package swervelib.encoders;
 
 import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import edu.wpi.first.wpilibj.DriverStation;
+<<<<<<< HEAD
+=======
+
+import edu.wpi.first.wpilibj.DriverStation;
+>>>>>>> BroncBotz3481-main
 
 /**
  * HELIUM {@link CANandcoder} from ReduxRobotics absolute encoder, attached through the CAN bus.
