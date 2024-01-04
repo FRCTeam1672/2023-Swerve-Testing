@@ -8,15 +8,15 @@
     "type": "sparkmax",
     "id": 14,
     "canbus": null
-  },
+  },  
   "encoder": {
     "type": "cancoder",
     "id": 16,
     "canbus": null
   },
   "inverted": {
-    "drive": true,
-    "angle": false
+    "drive": false,
+    "angle": true
   },
   "absoluteEncoderOffset": 281.77734375,
   "location": {
