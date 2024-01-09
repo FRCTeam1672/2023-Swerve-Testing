@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -80,8 +81,8 @@ public class RobotContainer {
         drivebase,
         () -> MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND), -0.65, 0.65),
         () -> MathUtil.clamp(MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), -0.65, 0.65),
-                                            //NOT FIELD RELATIVE
-        () -> -driverXbox.getRightX(), () -> false);
+                                            // FIELD RELATIVE
+        () -> -driverXbox.getRightX(), () -> true);
 
     drivebase.setDefaultCommand(closedFieldRel);
     // drivebase.setDefaultCommand(closedAbsoluteDrive);
@@ -102,7 +103,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // driverXbox.x().onTrue(new InstantCommand(drivebase::addFakeVisionReading));
-    driverXbox.a().onTrue(new InstantCommand(drivebase::lock, drivebase));
+    driverXbox.a().whileTrue(new InstantCommand(drivebase::lock, drivebase));
+    driverXbox.x().onTrue(new InstantCommand(drivebase::zeroGyro, drivebase));
+    driverXbox.b().onTrue(new InstantCommand(() -> {drivebase.resetOdometry(new Pose2d());}, drivebase));
     SmartDashboard.putData("Push Encoder Values", new InstantCommand(() -> {
       drivebase.pushOffsetsToControllers();
     }));
